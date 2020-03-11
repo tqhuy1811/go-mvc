@@ -11,7 +11,7 @@ import (
 func home(homeView *views.View) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		homeView.Template.ExecuteTemplate(w, homeView.Layout, nil)
+		homeView.Render(w, nil)
 	}
 
 }
@@ -20,7 +20,14 @@ func contact(contactView *views.View) func(w http.
 	ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		contactView.Template.ExecuteTemplate(w, contactView.Layout, nil)
+		contactView.Render(w, nil)
+	}
+}
+
+func login(loginView *views.View) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html")
+		loginView.Render(w, nil)
 	}
 }
 
@@ -37,9 +44,11 @@ func custom404Page(w http.ResponseWriter, r *http.Request) {
 func main() {
 	homeView, _ := views.NewView("bootstrap", "views/home.gohtml")
 	contactView, _ := views.NewView("bootstrap", "views/contact.gohtml")
+	loginView, _ := views.NewView("bootstrap", "views/signup.gohtml")
 	r := mux.NewRouter()
 	r.HandleFunc("/", home(homeView))
 	r.HandleFunc("/contact", contact(contactView))
+	r.HandleFunc("/signup", login(loginView))
 	r.HandleFunc("/faq", faq)
 	r.NotFoundHandler = http.HandlerFunc(custom404Page)
 	http.ListenAndServe(":3000", r)
